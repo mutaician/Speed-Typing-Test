@@ -39,13 +39,11 @@ def key_check(event):
     #     text.tag_add(f'char{index}', f'1.{index-1}', f'1.{index}')
     #     text.tag_config(f'char{index}', foreground='black')
     if t_char == text_content[index]:
-        print('Correct ')
         text.tag_add(f'char{index}', f'1.{index}', f'1.{index+1}')
         text.tag_config(f'char{index}', foreground='green')
     elif t_char!= text_content[index]:
         text.tag_add(f'char{index}', f'1.{index}', f'1.{index+1}')
         text.tag_config(f'char{index}', foreground='red')
-        print('Wrong')
     
 def start_type():
     text_entry.config(state='normal')
