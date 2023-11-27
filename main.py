@@ -20,14 +20,15 @@ def update_time():
         text_entry.config(state=tk.DISABLED)
         text_input = text_entry.get()
         timer_label.config(text=f"Time's up!\n Score: {check_words(text_input)}wpm")
+        restart_button.config(state=tk.NORMAL)
 
 
-def check_words(text: str):
+def check_words(text_input: str):
     count = 0
-    for word in text.split():
-        if word in random_words:
+    words = text.get('1.0', 'end').split()
+    for word in text_input.split():
+        if word in words:
             count += 1 
-    # words = text.count(" ") + 1
     return count
 
 def key_check(event):
@@ -51,31 +52,50 @@ def start_type():
     start_button.config(state=tk.DISABLED)
     text_entry.bind('<Key>', key_check)
 
-root = tk.Tk()
-root.title("Typing master")
-root.geometry("900x700")
-root.configure(background='aqua')
+def restart():
+    global time_to_type
+    random_words = random.sample(words_to_type, 100)
+    text.config(state=tk.NORMAL)
+    text.delete('1.0', 'end')
+    text.insert(tk.END, random_words)
+    text.config(state=tk.DISABLED)
+    time_to_type = 60
+    text_entry.config(state='normal')
+    text_entry.delete(0, tk.END)
+    restart_button.config(state=tk.DISABLED)
+    update_time()
+    
 
-msg = random_words
+root = tk.Tk()
+root.title("Speed-Typing-Test")
+root.geometry("1000x800")
+root.configure(background='#383E56')
+
+welcome_label = tk.Label(root, text="Welcome to Speed-Typing-Test", font=("Arial", 30, "bold"))
+welcome_label.config(foreground='#F69E7B', padx=20, pady=20, background='#383E56')
+welcome_label.grid(row=0, column=0, columnspan=2)
 
 text = tk.Text(root, width=60, height=13, wrap='word', padx=20, pady=20)
-text.insert(tk.END, msg)
-text.config(state=tk.DISABLED, font=("Courier New", 20), background='white')
-text.pack()
+text.insert(tk.END, random_words)
+text.config(state=tk.DISABLED, font=("Courier New", 20), background='#EEDAD1')
+text.grid(row=1, column=0, columnspan=2)
 
 text_entry = tk.Entry(root, width=50, justify='center', font=('Courier New', 15))
 text_entry.config(state='disabled')
 text_entry.focus_set()
-
-text_entry.pack()
+text_entry.grid(row=2, column=0, columnspan=2)
 
 timer_label = tk.Label(root, text=f"{time_to_type}")
-timer_label.config(font=("Arial", 27))
-timer_label.pack()
+timer_label.config(font=("Arial", 27), background='#D4B5B0')
+timer_label.grid(row=3, column=0, columnspan=2)
 
 start_button = tk.Button(root, text="Start", width=10, height=5, bg='green',bd=0,command=start_type)
 start_button.configure(borderwidth=0, highlightthickness=0, highlightbackground='red', highlightcolor='red')
-start_button.pack()
+start_button.grid(row=4, column=0)
 
+restart_button = tk.Button(root, text="Restart", width=10, height=5, bg='green',bd=0,command=restart)
+restart_button.configure(borderwidth=0, highlightthickness=0, highlightbackground='red', highlightcolor='red')
+restart_button.configure(state=tk.DISABLED)
+restart_button.grid(row=4, column=1)
 
 root.mainloop()
